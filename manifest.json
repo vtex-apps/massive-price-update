@@ -1,8 +1,8 @@
 {
-  "name": "service-example",
-  "vendor": "vtex",
+  "name": "massive-price-update",
+  "vendor": "vtexarg",
   "version": "0.2.0",
-  "title": "Service Example",
+  "title": "Massive price update",
   "description": "Reference app for VTEX IO Services",
   "mustUpdateAt": "2018-01-04",
   "categories": [],
@@ -19,15 +19,66 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "httpstat.us",
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/{{account}}/pricing/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercebeta.com.br",
+        "path": "/{{account}}/pricing/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/sessions/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.vtex.com",
+        "path": "/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "YOUR_SERVICE_DOMAIN",
         "path": "*"
       }
     },
     {
-      "name": "colossus-fire-event"
+      "name": "ADMIN_DS"
     },
     {
-      "name": "colossus-write-logs"
+      "name": "AlterarPrecoSku"
+    },
+    {
+      "name": "modify_prices"
+    },
+    {
+      "name": "read_prices"
+    },
+    {
+      "name": "POWER_USER_DS"
     }
   ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
