@@ -11,10 +11,7 @@ export async function validateMiddleware(
 
   for (const i in body) {
     const item = body[i]
-    const { itemId } = item
-    const { markup } = item
-    const { listPrice } = item
-    const { basePrice } = item
+    const { itemId, markup, listPrice, basePrice } = item
 
     if (
       !(
@@ -28,7 +25,7 @@ export async function validateMiddleware(
         itemId,
         success: 'false',
         error: 'Request failed with status code 400',
-        errorMessage: `Some field does not have a valid type`,
+        errorMessage: `Some fields do not have a valid type or are not defined`,
       })
     }
   }

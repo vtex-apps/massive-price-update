@@ -37,15 +37,26 @@ declare global {
 
   // The shape of our State object found in `ctx.state`. This is used as state bag to communicate between middlewares.
   interface State extends RecorderState {
-    validatedBody: [PriceItem]
+    validatedBody: PriceItem[]
   }
 
-  interface PriceItem {
+  type PriceItem = {
     itemId: number
     markup: number
     listPrice: number
     basePrice: number
-    fixedPrices?: string
+    fixedPrices?: FixedPrices[]
+  }
+
+  type FixedPrices = {
+    tradePolicyId: string
+    value: number
+    listPrice?: number
+    minQuantity: number
+    dateRange: {
+      from: string
+      to: string
+    }
   }
 
   interface PricingMiddlewareResponse {

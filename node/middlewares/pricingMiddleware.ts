@@ -23,23 +23,35 @@ export async function pricingMiddleware(
   async function updatePrices(
     arg: PriceItem
   ): Promise<PricingMiddlewareResponse> {
-    const { itemId } = arg
-    const { markup } = arg
-    const { listPrice } = arg
-    const { basePrice } = arg
+    const { itemId, markup, listPrice, basePrice, fixedPrices } = arg
     const body: Body = {
       markup,
       listPrice,
       basePrice,
+      fixedPrices,
     }
 
     try {
-      await pricingRestClient.updatePrice(body, itemId)
-
+      const response = await pricingRestClient.updatePrice(body, itemId)
       const pricingMiddlewareResponse: PricingMiddlewareResponse = {
         itemId,
         success: 'true',
       }
+
+      const { headers } = response
+      const ratelimitRemaining = headers['ratelimit-remaining']
+
+      if (ratelimitRemaining === '1') {
+        // eslint-disable-next-line no-console
+        console.log('before delay')
+        // eslint-disable-next-line no-console
+        console.log('ratelimitremaining', ratelimitRemaining)
+        await delay(3000)
+        // eslint-disable-next-line no-console
+        console.log('after delay')
+      }
+      // tirar un timeout cuando este por llegar al limite  y seguir
+      // ratelimit-remaining <= 10 .
 
       return pricingMiddlewareResponse
     } catch (error) {
@@ -47,6 +59,8 @@ export async function pricingMiddleware(
       console.log('statustext', error.response.statusText)
       // eslint-disable-next-line no-console
       console.log('errormessage', error.response.data)
+      // eslint-disable-next-line no-console
+      console.log('status', error.response.status)
       const pricingMiddlewareResponse = {
         itemId,
         success: 'false',
@@ -57,10 +71,15 @@ export async function pricingMiddleware(
       return pricingMiddlewareResponse
     }
   }
+
+  function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
 }
 
 export type Body = {
   markup: number
   listPrice: number
   basePrice: number
+  fixedPrices?: FixedPrices[]
 }

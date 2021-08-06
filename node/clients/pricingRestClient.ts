@@ -24,19 +24,10 @@ export default class PricingRestClient extends ExternalClient {
     body: Body,
     itemId: number
   ): Promise<IOResponse<void>> {
-    const result: Promise<IOResponse<void>> = this.http.put(
+    const result: Promise<IOResponse<void>> = this.http.putRaw(
       `/pricing/prices/${itemId}`,
       body
     )
-    /* 
-    result.then((value) => {
-      // eslint-disable-next-line no-console
-      console.log('data', value.data)
-      // eslint-disable-next-line no-console
-      console.log('status', value.status)
-      // eslint-disable-next-line no-console
-      console.log('headers', value.headers)
-    }) */
 
     return result
   }
