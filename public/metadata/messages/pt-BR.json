@@ -1,0 +1,14 @@
+{
+  "name": "Massive Price Update",
+  "headline": "Atualização massiva de preços SKU.",
+  "overview": "Este aplicativo permite que você atualize os preços do SKU em lotes.",
+  "features": [
+    "Redução dos tempos de integração.",
+    "Redução da sobrecarga para aplicativos.",
+    "Simplicidade."
+  ],
+  "websiteURL": "https://vtex.com/",
+  "support": {
+    "url": "https://support.vtex.com/hc/requests"
+  }
+}
