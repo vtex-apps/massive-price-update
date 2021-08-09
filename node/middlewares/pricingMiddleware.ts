@@ -23,11 +23,12 @@ export async function pricingMiddleware(
   async function updatePrices(
     arg: PriceItem
   ): Promise<PricingMiddlewareResponse> {
-    const { itemId, markup, listPrice, basePrice, fixedPrices } = arg
+    const { itemId, markup, listPrice, basePrice, costPrice, fixedPrices } = arg
     const body: Body = {
       markup,
       listPrice,
       basePrice,
+      costPrice,
       fixedPrices,
     }
 
@@ -42,16 +43,8 @@ export async function pricingMiddleware(
       const ratelimitRemaining = headers['ratelimit-remaining']
 
       if (ratelimitRemaining === '1') {
-        // eslint-disable-next-line no-console
-        console.log('before delay')
-        // eslint-disable-next-line no-console
-        console.log('ratelimitremaining', ratelimitRemaining)
         await delay(3000)
-        // eslint-disable-next-line no-console
-        console.log('after delay')
       }
-      // tirar un timeout cuando este por llegar al limite  y seguir
-      // ratelimit-remaining <= 10 .
 
       return pricingMiddlewareResponse
     } catch (error) {
@@ -78,8 +71,9 @@ export async function pricingMiddleware(
 }
 
 export type Body = {
-  markup: number
-  listPrice: number
-  basePrice: number
+  markup?: number
+  listPrice?: number
+  basePrice?: number
+  costPrice?: number
   fixedPrices?: FixedPrices[]
 }

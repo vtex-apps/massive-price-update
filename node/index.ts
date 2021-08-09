@@ -42,9 +42,10 @@ declare global {
 
   type PriceItem = {
     itemId: number
-    markup: number
-    listPrice: number
-    basePrice: number
+    markup?: number
+    listPrice?: number
+    basePrice?: number
+    costPrice?: number
     fixedPrices?: FixedPrices[]
   }
 
@@ -61,7 +62,7 @@ declare global {
 
   interface PricingMiddlewareResponse {
     itemId: number
-    success: string
+    success?: string
     error?: string
     errorMessage?: string
   }

@@ -9,24 +9,40 @@ export async function validateMiddleware(
 
   const errorList: PricingMiddlewareResponse[] = []
 
-  for (const i in body) {
-    const item = body[i]
-    const { itemId, markup, listPrice, basePrice } = item
+  async function fieldValidator(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    arg: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    itemId: number,
+    field: string
+  ): Promise<void> {
+    if (typeof arg !== 'undefined') {
+      if (typeof arg !== 'number') {
+        errorList.push({
+          itemId,
+          success: 'false',
+          error: 'Request failed with status code 400',
+          errorMessage: `The field '${field}' is not has a valid type`,
+        })
+      }
+    }
+  }
 
-    if (
-      !(
-        typeof itemId === 'number' &&
-        typeof markup === 'number' &&
-        typeof listPrice === 'number' &&
-        typeof basePrice === 'number'
-      )
-    ) {
+  for (const i of body) {
+    const { itemId, markup, listPrice, basePrice, costPrice } = i
+
+    if (typeof itemId !== 'number') {
       errorList.push({
         itemId,
         success: 'false',
         error: 'Request failed with status code 400',
-        errorMessage: `Some fields do not have a valid type or are not defined`,
+        errorMessage: `The field 'itemId' is not has a valid type`,
       })
+    } else {
+      fieldValidator(markup, itemId, 'markup')
+      fieldValidator(listPrice, itemId, 'listPrice')
+      fieldValidator(basePrice, itemId, 'basePrice')
+      fieldValidator(costPrice, itemId, 'costPrice')
     }
   }
 
