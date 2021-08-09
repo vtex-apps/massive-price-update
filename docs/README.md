@@ -80,6 +80,7 @@ Massive SKU price update service
 ```
 
 ## Flow
+![Massive price update flow](https://user-images.githubusercontent.com/33711188/128717597-84dc1adb-30e6-4577-bdf3-983789d69f6f.png)
 
 ## Contributors ✨
 
