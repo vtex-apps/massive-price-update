@@ -17,7 +17,7 @@
     "lint": "tsc --noEmit --pretty",
     "test": "jest --verbose"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "jest": {
     "testEnvironment": "node"
   }
