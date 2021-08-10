@@ -1,0 +1,14 @@
+{
+  "name": "Massive Price Update",
+  "headline": "Massive update of SKU prices.",
+  "overview": "This application allows you to update SKU prices in batches.",
+  "features": [
+    "Reduction of integration times.",
+    "Reduction of overhead for applications.",
+    "Simplicity."
+  ],
+  "websiteURL": "https://vtex.com/",
+  "support": {
+    "url": "https://support.vtex.com/hc/requests"
+  }
+}

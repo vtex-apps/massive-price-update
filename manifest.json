@@ -1,15 +1,22 @@
 {
-  "name": "service-example",
-  "vendor": "vtex",
+  "name": "massive-price-update",
+  "vendor": "vtexarg",
   "version": "0.2.0",
-  "title": "Service Example",
-  "description": "Reference app for VTEX IO Services",
+  "title": "Massive price update",
+  "description": "Massive update of SKU prices.",
   "mustUpdateAt": "2018-01-04",
   "categories": [],
   "dependencies": {},
   "builders": {
     "node": "6.x",
     "docs": "0.x"
+  },
+  "billingOptions": {
+    "support": {
+      "url": "https://support.vtex.com/hc/requests"
+    },
+    "type": "free",
+    "availableCountries": ["*"]
   },
   "scripts": {
     "prereleasy": "bash lint.sh"
@@ -19,15 +26,66 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "httpstat.us",
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/{{account}}/pricing/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercebeta.com.br",
+        "path": "/{{account}}/pricing/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/sessions/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.vtex.com",
+        "path": "/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "YOUR_SERVICE_DOMAIN",
         "path": "*"
       }
     },
     {
-      "name": "colossus-fire-event"
+      "name": "ADMIN_DS"
     },
     {
-      "name": "colossus-write-logs"
+      "name": "AlterarPrecoSku"
+    },
+    {
+      "name": "modify_prices"
+    },
+    {
+      "name": "read_prices"
+    },
+    {
+      "name": "POWER_USER_DS"
     }
   ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
