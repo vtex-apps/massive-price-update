@@ -1,3 +1,4 @@
+import { UserInputError } from '@vtex/api'
 import { json } from 'co-body'
 
 export async function validateMiddleware(
@@ -11,39 +12,48 @@ export async function validateMiddleware(
 
   async function fieldValidator(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    arg: any,
+    arg: any[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    itemId: number,
-    field: string
+    itemId: number
   ): Promise<void> {
-    if (typeof arg !== 'undefined') {
-      if (typeof arg !== 'number') {
-        errorList.push({
-          itemId,
-          success: 'false',
-          error: 'Request failed with status code 400',
-          errorMessage: `The field '${field}' is not has a valid type`,
-        })
+    for (const aux of arg) {
+      if (typeof aux.value !== 'undefined') {
+        if (typeof aux.value !== 'number') {
+          errorList.push({
+            itemId,
+            success: 'false',
+            error: 'Request failed with status code 400',
+            errorMessage: `The request is invalid: field ${aux.name}' must be a number`,
+          })
+        }
       }
     }
   }
 
-  for (const i of body) {
-    const { itemId, markup, listPrice, basePrice, costPrice } = i
+  try {
+    for await (const i of body) {
+      const { itemId, markup, listPrice, basePrice, costPrice } = i
 
-    if (typeof itemId !== 'number') {
-      errorList.push({
-        itemId,
-        success: 'false',
-        error: 'Request failed with status code 400',
-        errorMessage: `The field 'itemId' is not has a valid type`,
-      })
-    } else {
-      fieldValidator(markup, itemId, 'markup')
-      fieldValidator(listPrice, itemId, 'listPrice')
-      fieldValidator(basePrice, itemId, 'basePrice')
-      fieldValidator(costPrice, itemId, 'costPrice')
+      if (typeof itemId !== 'number') {
+        errorList.push({
+          itemId,
+          success: 'false',
+          error: '400',
+          errorMessage: `The request is invalid: field 'itemId' must be a number`,
+        })
+      } else {
+        const fields = [
+          { name: 'markup', value: markup },
+          { name: 'listPrice', value: listPrice },
+          { name: 'basePrice', value: basePrice },
+          { name: 'costPrice', value: costPrice },
+        ]
+
+        fieldValidator(fields, itemId)
+      }
     }
+  } catch (err) {
+    throw new UserInputError(err)
   }
 
   if (errorList.length >= 1) {

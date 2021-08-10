@@ -34,39 +34,34 @@ export async function pricingMiddleware(
 
     try {
       const response = await pricingRestClient.updatePrice(body, itemId)
-      const pricingMiddlewareResponse: PricingMiddlewareResponse = {
-        itemId,
-        success: 'true',
+
+      if (response.status === 200) {
+        const pricingMiddlewareResponse: PricingMiddlewareResponse = {
+          itemId,
+          success: 'true',
+        }
+
+        return pricingMiddlewareResponse
       }
 
-      const { headers } = response
-      const ratelimitRemaining = headers['ratelimit-remaining']
-
-      if (ratelimitRemaining === '1') {
-        await delay(3000)
+      const { statusText } = response.headers
+      const pricingMiddlewareResponse: PricingMiddlewareResponse = {
+        itemId,
+        success: 'false',
+        error: statusText,
       }
 
       return pricingMiddlewareResponse
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log('statustext', error.response.statusText)
-      // eslint-disable-next-line no-console
-      console.log('errormessage', error.response.data)
-      // eslint-disable-next-line no-console
-      console.log('status', error.response.status)
       const pricingMiddlewareResponse = {
         itemId,
         success: 'false',
-        error: error.response.statusText,
+        error: error.response.status,
         errorMessage: error.response.data,
       }
 
       return pricingMiddlewareResponse
     }
-  }
-
-  function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 
