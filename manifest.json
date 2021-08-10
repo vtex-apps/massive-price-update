@@ -3,13 +3,20 @@
   "vendor": "vtexarg",
   "version": "0.2.0",
   "title": "Massive price update",
-  "description": "Reference app for VTEX IO Services",
+  "description": "Massive update of SKU prices.",
   "mustUpdateAt": "2018-01-04",
   "categories": [],
   "dependencies": {},
   "builders": {
     "node": "6.x",
     "docs": "0.x"
+  },
+  "billingOptions": {
+    "support": {
+      "url": "https://support.vtex.com/hc/requests"
+    },
+    "type": "free",
+    "availableCountries": ["*"]
   },
   "scripts": {
     "prereleasy": "bash lint.sh"
