@@ -26,7 +26,10 @@ Massive SKU price update service
     - dateRange:
       - from [string]
       - to [string]
-   
+  
+>   Read API Information to know what combinations of fields to send [link](https://developers.vtex.com/vtex-rest-api/reference/prices-and-fixed-prices#createupdatepriceorfixedprice)
+
+ 
 ### Request body example
 ```json
 [
