@@ -87,5 +87,4 @@ Massive SKU price update service
 
 ## Contributors ✨
 
-
 Thanks goes to these wonderful people:
