@@ -33,37 +33,60 @@ Massive SKU price update service
 ### Request body example
 ```json
 [
-  {
-    "markup": 30,
-    "listPrice": 50,
-    "basePrice": 100,
-    "itemId": 1,
-    "fixedPrices": [
-      {
-        "tradePolicyId": "1",
-        "value": 50.5,
-        "listPrice": 50.5,
-        "minQuantity": 2,
-        "dateRange": {
-          "from": "2021-07-28T22:00:00-03:00",
-          "to": "2021-07-30T23:00:00-03:00"
-        }
-      }
-    ]
-  }
-]    
+    {
+        "markup": 30,
+        "listPrice": 50,
+        "basePrice": 100,
+        "itemId": 1,
+        "fixedPrices": [
+            {
+                "tradePolicyId": "1",
+                "value": 50.5,
+                "listPrice": 50.5,
+                "minQuantity": 2,
+                "dateRange": {
+                    "from": "2021-12-30T22:00:00-03:00",
+                    "to": "2021-12-30T23:00:00-03:00"
+                }
+            }
+        ]
+    }
+]   
 ```
       
 ### Success Response body example
 
 ```json
 {
-    "message": [
-        {
-            "itemId": 1,
-            "success": "true"
-        }
-    ]
+    "successfulResponses": {
+        "elements": [
+            {
+                "itemId": 1,
+                "success": "true",
+                "markup": 30,
+                "listPrice": 50,
+                "basePrice": 100,
+                "fixedPrices": [
+                    {
+                        "tradePolicyId": "1",
+                        "value": 50.5,
+                        "listPrice": 50.5,
+                        "minQuantity": 2,
+                        "dateRange": {
+                            "from": "2021-12-30T22:00:00-03:00",
+                            "to": "2021-12-30T23:00:00-03:00"
+                        }
+                    }
+                ]
+            }
+        ],
+        "quantity": 1
+    },
+    "failedResponses": {
+        "elements": [],
+        "quantity": 0
+    },
+    "total": 1
 }
 ```
 
@@ -71,14 +94,36 @@ Massive SKU price update service
 
 ```json
 {
-    "message": [
-        {
-            "itemId": 1,
-            "success": "false",
-            "error": "Request failed with status code 400",
-            "errorMessage": "Some fields do not have a valid type"
-        }
-    ]
+    "successfulResponses": {
+        "elements": [],
+        "quantity": 0
+    },
+    "failedResponses": {
+        "elements": [
+            {
+                "itemId": 1,
+                "success": "false",
+                "listPrice": 50,
+                "basePrice": 100,
+                "fixedPrices": [
+                    {
+                        "tradePolicyId": "1",
+                        "value": 50.5,
+                        "listPrice": 50.5,
+                        "minQuantity": 2,
+                        "dateRange": {
+                            "from": "2021-12-30T22:00:00-03:00",
+                            "to": "2021-12-30T23:00:00-03:00"
+                        }
+                    }
+                ],
+                "error": 400,
+                "errorMessage": "The request is invalid: Item 1 must have exactly two values filled between basePrice, costPrice and markup\n"
+            }
+        ],
+        "quantity": 1
+    },
+    "total": 1
 }
 ```
 
