@@ -1,11 +1,11 @@
 import type { InstanceOptions, IOContext, IOResponse } from '@vtex/api'
-import { ExternalClient } from '@vtex/api'
+import { JanusClient } from '@vtex/api'
 
 import type { Body } from '../middlewares/pricingMiddleware'
 
-export default class PricingRestClient extends ExternalClient {
+export default class PricingRestClient extends JanusClient {
   constructor(context: IOContext, options?: InstanceOptions) {
-    super(`https://api.vtex.com/${context.account}`, context, {
+    super(context, {
       ...options,
       headers: {
         VtexIdClientAutCookie:
@@ -24,11 +24,9 @@ export default class PricingRestClient extends ExternalClient {
     body: Body,
     itemId: number
   ): Promise<IOResponse<void>> {
-    const result: Promise<IOResponse<void>> = this.http.putRaw(
-      `/pricing/prices/${itemId}`,
+    return this.http.putRaw(
+      `http://api.vtex.com/${this.context.account}/pricing/prices/${itemId}`,
       body
     )
-
-    return result
   }
 }
