@@ -8,22 +8,61 @@ export async function pricingMiddleware(
     clients: { pricingRestClient },
   } = ctx
 
-  const myresponse = await Promise.all(
-    validatedBody.map(async (arg) => {
-      return updatePrices(arg)
-    })
-  )
+  const responseList: UpdateResponse[] = []
 
-  ctx.body = {
-    message: myresponse,
+  try {
+    const expected = await operationRetry(
+      await Promise.all(
+        validatedBody.map(async (arg) => {
+          return updatePrices(arg)
+        })
+      )
+    )
+
+    if (expected) {
+      const successfulResponses: UpdateResponse[] = responseList.filter((e) => {
+        return e.success !== 'false'
+      })
+
+      const failedResponses: UpdateResponse[] = responseList.filter((e) => {
+        return e.success === 'false'
+      })
+
+      ctx.status = 200
+      ctx.body = {
+        successfulResponses: {
+          elements: successfulResponses,
+          quantity: successfulResponses.length,
+        },
+        failedResponses: {
+          elements: failedResponses,
+          quantity: failedResponses.length,
+        },
+        total: responseList.length,
+      }
+
+      await next()
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log('error', error)
+    ctx.status = 500
+    ctx.body = error
+    await next()
   }
-  ctx.status = 200
-  await next()
 
   async function updatePrices(
-    arg: PriceItem
-  ): Promise<PricingMiddlewareResponse> {
-    const { itemId, markup, listPrice, basePrice, costPrice, fixedPrices } = arg
+    updateRequest: UpdateRequest
+  ): Promise<UpdateResponse> {
+    const {
+      itemId,
+      markup,
+      listPrice,
+      basePrice,
+      costPrice,
+      fixedPrices,
+    } = updateRequest
+
     const body: Body = {
       markup,
       listPrice,
@@ -33,34 +72,114 @@ export async function pricingMiddleware(
     }
 
     try {
-      const response = await pricingRestClient.updatePrice(body, itemId)
+      await pricingRestClient.updatePrice(body, itemId)
 
-      if (response.status === 200) {
-        const pricingMiddlewareResponse: PricingMiddlewareResponse = {
-          itemId,
-          success: 'true',
-        }
-
-        return pricingMiddlewareResponse
-      }
-
-      const { statusText } = response.headers
-      const pricingMiddlewareResponse: PricingMiddlewareResponse = {
+      const pricingMiddlewareResponse: UpdateResponse = {
         itemId,
-        success: 'false',
-        error: statusText,
+        success: 'true',
+        markup,
+        listPrice,
+        basePrice,
+        costPrice,
+        fixedPrices,
       }
 
       return pricingMiddlewareResponse
     } catch (error) {
-      const pricingMiddlewareResponse = {
+      const data = error.response ? error.response.data : ''
+      const updatePricingRestClientErrorResponse = {
         itemId,
         success: 'false',
-        error: error.response.status,
-        errorMessage: error.response.data,
+        markup,
+        listPrice,
+        basePrice,
+        costPrice,
+        fixedPrices,
+        error: error.response ? error.response.status : 429,
+        errorMessage: data.error ? data.error.message : data,
       }
 
-      return pricingMiddlewareResponse
+      if (error.response && error.response.status === 429) {
+        updatePricingRestClientErrorResponse.errorMessage = error.response
+          ? error.response.headers['ratelimit-reset']
+          : ''
+      }
+
+      return updatePricingRestClientErrorResponse
+    }
+  }
+
+  async function operationRetry(
+    updateResponseList: UpdateResponse[]
+  ): Promise<any> {
+    addResponsesSuccessfulUpdates(updateResponseList)
+
+    const response = await findStoppedRequests(updateResponseList)
+
+    return response
+  }
+
+  async function findStoppedRequests(
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    responseList: UpdateResponse[]
+  ): Promise<any> {
+    const retryList: UpdateRequest[] = []
+    let value = '0'
+
+    if (responseList.length >= 1) {
+      for (const index in responseList) {
+        const response = responseList[index]
+
+        if (response.error && response.error === 429) {
+          if (response.errorMessage && response.errorMessage > value) {
+            value = response.errorMessage
+          }
+
+          if (value === '0') {
+            value = '20'
+          }
+
+          retryList.push({
+            itemId: response.itemId,
+            markup: response.markup,
+            listPrice: response.listPrice,
+            basePrice: response.basePrice,
+            costPrice: response.costPrice,
+            fixedPrices: response.fixedPrices,
+          })
+        }
+      }
+    }
+
+    if (retryList.length >= 1) {
+      let retryOperation: UpdateResponse[] = []
+
+      const awaitTimeout = (delay: string) =>
+        new Promise((resolve) => setTimeout(resolve, parseFloat(delay) * 1000))
+
+      await awaitTimeout(value)
+
+      retryOperation = await Promise.all(
+        retryList.map(async (item) => {
+          return updatePrices(item)
+        })
+      )
+
+      return operationRetry(retryOperation)
+    }
+
+    return true
+  }
+
+  function addResponsesSuccessfulUpdates(
+    updateResponseList: UpdateResponse[]
+  ): void {
+    for (const index in updateResponseList) {
+      const updateResponse = updateResponseList[index]
+
+      if (updateResponse.error !== 429) {
+        responseList.push(updateResponse)
+      }
     }
   }
 }

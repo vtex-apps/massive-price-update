@@ -6,51 +6,76 @@ export async function validateMiddleware(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   next: () => Promise<any>
 ) {
-  const body = await json(ctx.req)
+  const requestList = await json(ctx.req)
+  const errorList: any[] = []
 
-  const errorList: PricingMiddlewareResponse[] = []
+  function requestValidator(request: UpdateRequest): void {
+    const requestErrorList: UpdateResponse[] = []
 
-  async function fieldValidator(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    arg: any[],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    itemId: number
-  ): Promise<void> {
-    for (const aux of arg) {
-      if (typeof aux.value !== 'undefined') {
-        if (typeof aux.value !== 'number') {
-          errorList.push({
-            itemId,
-            success: 'false',
-            error: 'Request failed with status code 400',
-            errorMessage: `The request is invalid: field ${aux.name}' must be a number`,
-          })
-        }
+    const { itemId, markup, listPrice, basePrice, costPrice } = request
+
+    if (!itemId) {
+      requestErrorList.push({
+        itemId,
+        markup,
+        listPrice,
+        basePrice,
+        costPrice,
+        success: 'false',
+        error: 400,
+        errorMessage: `The request is invalid: The '${itemId}' field is required.`,
+      })
+    }
+
+    if (markup) {
+      if (!(typeof markup === 'number')) {
+        requestErrorList.push(errorResponseGenerator('markup'))
+      }
+    }
+
+    if (listPrice) {
+      if (!(typeof listPrice === 'number')) {
+        requestErrorList.push(errorResponseGenerator('listPrice'))
+      }
+    }
+
+    if (basePrice) {
+      if (!(typeof basePrice === 'number')) {
+        requestErrorList.push(errorResponseGenerator('basePrice'))
+      }
+    }
+
+    if (costPrice) {
+      if (!(typeof costPrice === 'number')) {
+        requestErrorList.push(errorResponseGenerator('costPrice'))
+      }
+    }
+
+    if (requestErrorList.length >= 1) {
+      errorList.push(requestErrorList)
+    }
+
+    function errorResponseGenerator(field: string): UpdateResponse {
+      return {
+        itemId,
+        markup,
+        listPrice,
+        basePrice,
+        costPrice,
+        success: 'false',
+        error: 400,
+        errorMessage: `The request is invalid: field ${field}' must be a number.`,
       }
     }
   }
 
   try {
-    for await (const i of body) {
-      const { itemId, markup, listPrice, basePrice, costPrice } = i
-
-      if (typeof itemId !== 'number') {
-        errorList.push({
-          itemId,
-          success: 'false',
-          error: '400',
-          errorMessage: `The request is invalid: field 'itemId' must be a number`,
-        })
-      } else {
-        const fields = [
-          { name: 'markup', value: markup },
-          { name: 'listPrice', value: listPrice },
-          { name: 'basePrice', value: basePrice },
-          { name: 'costPrice', value: costPrice },
-        ]
-
-        fieldValidator(fields, itemId)
+    if (requestList.length >= 1) {
+      for (const request of requestList) {
+        requestValidator(request)
       }
+    } else {
+      throw new Error('Empty request')
     }
   } catch (err) {
     throw new UserInputError(err)
@@ -58,14 +83,17 @@ export async function validateMiddleware(
 
   if (errorList.length >= 1) {
     ctx.status = 400
-    ctx.response.body = {
-      message: errorList,
+    ctx.body = {
+      failedResponses: {
+        elements: errorList,
+        quantity: errorList.length,
+      },
     }
 
     return
   }
 
-  ctx.state.validatedBody = body
+  ctx.state.validatedBody = requestList
 
   await next()
 }
