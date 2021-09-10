@@ -1,7 +1,7 @@
 {
   "name": "massive-price-update",
   "vendor": "vtexarg",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Massive price update",
   "description": "Massive update of SKU prices.",
   "mustUpdateAt": "2018-01-04",
