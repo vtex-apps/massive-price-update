@@ -16,9 +16,7 @@
       "url": "https://support.vtex.com/hc/requests"
     },
     "type": "free",
-    "availableCountries": [
-      "*"
-    ]
+    "availableCountries": ["*"]
   },
   "scripts": {
     "prereleasy": "bash lint.sh"
@@ -28,54 +26,9 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "{{account}}.vtexcommercestable.com.br",
-        "path": "/api/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "api.vtexcommercestable.com.br",
-        "path": "/api/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "portal.vtexcommercestable.com.br",
-        "path": "/{{account}}/pricing/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "portal.vtexcommercebeta.com.br",
-        "path": "/{{account}}/pricing/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "portal.vtexcommercestable.com.br",
-        "path": "/api/sessions/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
         "host": "api.vtex.com",
-        "path": "/*"
+        "path": "/{{account}}/pricing/prices/*"
       }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "YOUR_SERVICE_DOMAIN",
-        "path": "*"
-      }
-    },
-    {
-      "name": "ADMIN_DS"
     },
     {
       "name": "AlterarPrecoSku"
@@ -85,9 +38,6 @@
     },
     {
       "name": "read_prices"
-    },
-    {
-      "name": "POWER_USER_DS"
     }
   ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"

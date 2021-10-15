@@ -25,6 +25,8 @@ export async function validateMiddleware(
         error: 400,
         errorMessage: `The request is invalid: The '${itemId}' field is required.`,
       })
+    } else if (!(typeof itemId === 'number')) {
+      requestErrorList.push(errorResponseGenerator('itemId'))
     }
 
     if (markup) {
