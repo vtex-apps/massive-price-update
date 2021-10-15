@@ -95,7 +95,7 @@ export async function pricingMiddleware(
         basePrice,
         costPrice,
         fixedPrices,
-        error: error.response ? error.response.status : 429,
+        error: error.response ? error.response.status : 500,
         errorMessage: data.error ? data.error.message : data,
       }
 
