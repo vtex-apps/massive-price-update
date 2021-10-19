@@ -161,6 +161,29 @@ curl --location --request PUT 'https://app.io.vtex.com/vtexarg.massive-price-upd
 }
 ```
 
+## Credentials
+
+### Create appKey y appToken
+
+To generate app keys in your account, you should follow the instructions seen in the [Application Keys](https://help.vtex.com/en/tutorial/application-keys--2iffYzlvvz4BDMr6WGUtet) article in our Help Center.
+
+### Create role
+
+[Create a role](https://help.vtex.com/en/tracks/accounts-and-permissions--5PxyAgZrtiYlaYZBTlhJ2A/6Ymo5bNMyEYBGsTmbTC3H9?&utm_source=autocomplete) with the Logistics product and associate the resource 'Logistics access'. Finally add the appKey as a user.
+
+### Convert to JWT
+
+Make a call with the credentials created. The result, if the credentials are valid, will return a token that will be used as the value in the header 'VtexIdclientAutCookie' requested by the massive-stock-update component.
+
+```shell
+curl --location --request POST 'http://vtexid.vtexcommercestable.com.br/api/vtexid/apptoken/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "appkey": "...",
+    "apptoken": "..."
+}'
+```
+
 ## Flow
 
 ![Massive price update flow](https://user-images.githubusercontent.com/33711188/132802870-1b6e5c76-2102-4e32-994d-715c8e3d645c.png)
