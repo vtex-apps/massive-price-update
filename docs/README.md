@@ -3,7 +3,8 @@
 Massive SKU price update service
 
 ```shell
-PUT `https://app.io.vtex.com/vtexarg.massive-price-update/v1/{{accountName}}/{{workspace}}/_v/massive/price/update`
+
+PUT `https://{{workspace}}--{{accountName}}.myvtex.com/_v/massive/price/update`
 
 ```
 
