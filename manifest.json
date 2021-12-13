@@ -16,15 +16,16 @@
       "url": "https://support.vtex.com/hc/requests"
     },
     "type": "free",
-    "availableCountries": [
-      "*"
-    ]
+    "availableCountries": ["*"]
   },
   "scripts": {
     "prereleasy": "bash lint.sh"
   },
   "credentialType": "absolute",
   "policies": [
+    {
+      "name": "AlterarPrecoSku"
+    },
     {
       "name": "outbound-access",
       "attrs": {
@@ -33,13 +34,10 @@
       }
     },
     {
-      "name": "AlterarPrecoSku"
+      "name": "colossus-fire-event"
     },
     {
-      "name": "modify_prices"
-    },
-    {
-      "name": "read_prices"
+      "name": "colossus-write-logs"
     }
   ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"

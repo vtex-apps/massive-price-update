@@ -8,22 +8,37 @@ export default class PricingRestClient extends JanusClient {
     super(context, {
       ...options,
       headers: {
-        VtexIdClientAutCookie:
-          context.adminUserAuthToken ?? context.authToken ?? '',
-
         'Content-Type': 'application/json; charset=utf-8',
         Accept: 'application/json',
+        'X-Vtex-Use-Https': 'true',
       },
     })
   }
 
+  // eslint-disable-next-line max-params
   public async updatePrice(
     body: Body,
-    itemId: number
+    itemId: number,
+    authToken: string,
+    appKey: string,
+    appToken: string
   ): Promise<IOResponse<void>> {
-    return this.http.putRaw(
-      `http://api.vtex.com/${this.context.account}/pricing/prices/${itemId}`,
-      body
-    )
+    const headers =
+      authToken !== ''
+        ? {
+            headers: {
+              VtexIdclientAutCookie: authToken,
+            },
+          }
+        : {
+            headers: {
+              'X-VTEX-API-AppKey': appKey,
+              'X-VTEX-API-AppToken': appToken,
+            },
+          }
+
+    const url = `https://api.vtex.com/${this.context.account}/pricing/prices/${itemId}`
+
+    return this.http.putRaw(url, body, headers)
   }
 }
