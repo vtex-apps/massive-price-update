@@ -44,8 +44,6 @@ export async function pricingMiddleware(
       await next()
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('error', error)
     ctx.status = 500
     ctx.body = error
     await next()
@@ -72,8 +70,17 @@ export async function pricingMiddleware(
     }
 
     try {
-      await pricingRestClient.updatePrice(body, itemId)
+      const vtexIdToken = ctx.get('VtexIdclientAutCookie') ?? ''
+      const appKey = ctx.get('X-VTEX-API-AppKey') ?? ''
+      const appToken = ctx.get('X-VTEX-API-AppToken') ?? ''
 
+      await pricingRestClient.updatePrice(
+        body,
+        itemId,
+        vtexIdToken,
+        appKey,
+        appToken
+      )
       const pricingMiddlewareResponse: UpdateResponse = {
         itemId,
         success: 'true',

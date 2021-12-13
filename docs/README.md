@@ -163,6 +163,17 @@ curl --location --request PUT 'https://app.io.vtex.com/vtexarg.massive-price-upd
 
 ## Credentials
 
+### What Header to use?
+
+You can use the following headers:
+
+- X-VTEX-API-AppKey
+- X-VTEX-API-AppToken
+
+Or
+
+- VtexIdClientAutCookie
+
 ### Create appKey y appToken
 
 To generate app keys in your account, you should follow the instructions seen in the [Application Keys](https://help.vtex.com/en/tutorial/application-keys--2iffYzlvvz4BDMr6WGUtet) article in our Help Center.
@@ -183,6 +194,14 @@ curl --location --request POST 'http://vtexid.vtexcommercestable.com.br/api/vtex
     "apptoken": "..."
 }'
 ```
+
+## Testing with bash script
+
+In the tests directory you can find the following sample scripts to compare performance between component execution versus parallel calls to the Pricing API.
+
+- api-pricing-test.sh
+- massive-price-update.sh
+- update-parallel-api-price.sh
 
 ## Flow
 

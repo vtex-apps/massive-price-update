@@ -24,6 +24,9 @@
   "credentialType": "absolute",
   "policies": [
     {
+      "name": "AlterarPrecoSku"
+    },
+    {
       "name": "outbound-access",
       "attrs": {
         "host": "api.vtex.com",

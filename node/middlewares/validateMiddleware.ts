@@ -6,6 +6,23 @@ export async function validateMiddleware(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   next: () => Promise<any>
 ) {
+  const vtexIdToken = ctx.get('VtexIdclientAutCookie')
+  const appKey = ctx.get('X-VTEX-API-AppKey')
+  const appToken = ctx.get('X-VTEX-API-AppToken')
+
+  if (!(vtexIdToken !== '') && !(vtexIdToken.length > 1)) {
+    if (
+      !(appKey !== '' && !(appKey.length > 1)) &&
+      !(appToken !== '') &&
+      !(appToken.length > 1)
+    ) {
+      ctx.status = 401
+      ctx.body = 'Unauthorized access.'
+
+      return
+    }
+  }
+
   const requestList = await json(ctx.req)
   const errorList: any[] = []
 
