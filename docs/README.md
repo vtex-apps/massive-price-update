@@ -3,6 +3,7 @@
 Massive SKU price update service
 
 ```shell
+
 PUT `https://{{workspace}}--{{accountName}}.myvtex.com/_v/massive/price/update`
 
 ```
