@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Changed
+### Add
 
 - Update README.md
 - Update manifest.json
+- Add auth options
+- Add script test
 
 ## [1.1.3] - 2021-10-15
 
